@@ -2,12 +2,12 @@
 
 The environment is a light bulb which is randomly switched off and on.
 
-The robot has a LED. The LED should be switched on/off according to
+The lightRobot has a LED. The LED should be switched on/off according to
 the bulb state.
 
-When the reward function is for synchron robot, the LED
+When the reward function is for synchron lightRobot, the LED
 should be in synchron with the bulb.
-When the reward function is for asynchron robot, the LED
+When the reward function is for asynchron lightRobot, the LED
 should be on when the bulb is off and vice versa. 
 
 ## Actions
