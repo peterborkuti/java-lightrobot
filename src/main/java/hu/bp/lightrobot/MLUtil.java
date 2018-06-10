@@ -2,6 +2,7 @@ package hu.bp.lightrobot;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 public class MLUtil {
@@ -51,16 +52,62 @@ public class MLUtil {
 	 * @return
 	 */
 	public static Double[][] getRandomMatrix(int rows, int cols) {
-		Random rnd = new Random();
 		Double[][] q = new Double[rows][cols];
 
 		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				q[i][j] = rnd.nextDouble();
-			}
+			q[i] = getRandomArray(cols);
 		}
 
 		return q;
+	}
+
+	public static Double[] getRandomArray(int length) {
+		Random rnd = new Random();
+
+		return rnd.doubles(length).boxed().toArray(Double[]::new);
+	}
+
+	/**
+	 * Creates an improved policy based on an existing with the epsilon-greedy-method
+	 *
+	 * WARNING! Only one action will be the best.
+	 * @param policyForTheGivenState the actual policy for the given state
+	 * @param aStar the best action for the given state
+	 * @param epsilon
+	 * @return
+	 */
+	public static Double[] getEpsilonGreedyPolicy(Double[] policyForTheGivenState, int aStar, double epsilon) {
+		double bad = epsilon / policyForTheGivenState.length;
+		double good = 1 - epsilon + bad;
+
+		return IntStream.range(0, policyForTheGivenState.length).
+				mapToDouble( i -> (i == aStar) ? good : bad).boxed().toArray(Double[]::new);
+	}
+
+	/**
+	 * Gets average from a list of doubles
+	 * @param returns
+	 * @return
+	 */
+	public static Double getAverageReturnForAStateAction(List<Double> returns) {
+		double ret = returns.stream().collect(Collectors.averagingDouble(Double::new));
+
+		return (returns.size() == 0) ? 0 : ret;
+	}
+
+	public static String getAverageReturnsForActions(List<Double>[] returns) {
+		return
+			Arrays.stream(returns).
+				map(list -> getAverageReturnForAStateAction(list)).
+				map(String::valueOf).
+				collect(Collectors.joining(","));
+	}
+
+
+	public static String getAverageReturns(List<Double>[][] returns) {
+		return
+			Arrays.stream(returns).map(arr -> getAverageReturnsForActions(arr)).
+				collect(Collectors.joining("\n"));
 	}
 
 	/**
@@ -91,14 +138,14 @@ public class MLUtil {
 
 
 	public static <T extends Number> String arrToString(T[] arr) {
-		return Arrays.stream(arr).map(String::valueOf).collect(Collectors.joining(","));
+		return "[" + Arrays.stream(arr).map(String::valueOf).collect(Collectors.joining(",")) + "]";
 	}
 
 	public static <T extends Number> String matrixToString(T[][] matrix) {
-		return Arrays.stream(matrix).map(
+		return "[" + Arrays.stream(matrix).map(
 					l -> Arrays.stream(l).map(String::valueOf).collect(Collectors.joining(","))
 				).
-				collect(Collectors.joining("\n"));
+				collect(Collectors.joining("\n")) + "]";
 	}
 
 	public static <T extends Number> Integer[] rowArgMax(T[][] matrix) {
@@ -110,11 +157,23 @@ public class MLUtil {
 					toArray(Integer[]::new);
 	}
 
+	public static<T extends Number> String listToString(List<T> list) {
+		return "{" + list.stream().map(String::valueOf).collect(Collectors.joining(",")) + "}";
+	}
+
 	public static <T extends Number> String arrListToString(List<T> arr[]) {
 		return Arrays.stream(arr).
 						map(
-							l -> l.stream().map(String::valueOf).collect(Collectors.joining(","))
+							l -> listToString(l)
 						).
 						collect(Collectors.joining("\n"));
+	}
+
+	public static <T extends Number> String matrixListToString(List<T> matrix[][]) {
+		return Arrays.stream(matrix).
+				map(
+					row -> arrListToString(row)
+				).
+				collect(Collectors.joining("\n"));
 	}
 }
