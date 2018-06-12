@@ -13,7 +13,7 @@ public class LightRobot extends MonteCarloAgent {
 	}
 
 	public int getAction(int state, int timeStep) {
-		return ActionUtil.epsilonTimeStepGreedy(policy[state], timeStep);
+		return ActionUtil.timedEpsilonGreedy(policy[state], timeStep);
 	}
 
 

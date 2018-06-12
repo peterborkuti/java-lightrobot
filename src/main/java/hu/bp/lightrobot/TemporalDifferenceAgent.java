@@ -24,6 +24,7 @@ public abstract class TemporalDifferenceAgent implements Agent {
 	@Override
 	public void act(int numOfEpisodes, int steps) {
 		//Double[] valueFunction = prediction(numOfEpisodes, steps, policy);
+
 		//System.out.println("Q:" + MLUtil.matrixToString(q));
 
 		for (int i = 0; i < numOfEpisodes; i++) {
@@ -37,11 +38,58 @@ public abstract class TemporalDifferenceAgent implements Agent {
 		System.out.println("LastPolicy:" + this.toString());
 	}
 
-	private Double[] prediciton(int numOfEpisodes, int stepsInEpisode, Double[][] policy) {
-		Double[] valueF = MLUtil.getRandomArray(world.getNumberOfStates());
+	private Double[] prediction(int episodeNum, int stepsInEpisode, Double[][] policy, double learningRate, double discount) {
+		Double[] V = MLUtil.getRandomArray(world.getNumberOfStates());
 
-		return valueF;
+		int worldState = world.reset();
+		int action = 0;
 
+		int state = 0;
+
+		for (int i = 0; i < stepsInEpisode; i++) {
+			int prevState = state;
+			action = getAction(prevState, episodeNum * stepsInEpisode + i);
+			Step step = world.step(action);
+			state = step.observation;
+			double R = step.reward;
+			V[prevState] += learningRate *(R + discount * V[state] - V[prevState]);
+		}
+
+		return V;
+	}
+
+	private int getNumberOfStates() {
+		return world.getNumberOfStates() * getNumberOfActions();
+	}
+
+	private void controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
+		Double[][] Q = MLUtil.getRandomMatrix(getNumberOfStates(), getNumberOfActions());
+
+		for (int i = 0; i < numOfEpsiodes; i++) {
+			int worldState = world.reset();
+
+			int state = worldState;
+			int action = getAction(state, i * stepsInEpizode);
+
+			for (int j = 0; j < stepsInEpizode; j++) {
+				Step step = world.step(action);
+				double R = step.reward;
+				int newState = step.observation + world.getNumberOfStates() * action;
+				int aStart = MLUtil.argMax()
+				policy[newState] = MLUtil.getEpsilonGreedyPolicy(policy[newState], )
+				int newAction = getAction(newState, i * stepsInEpizode + j);
+
+				Q[state][action] += learningRate * (R + discount * Q[newState][newAction] - Q[state][action]);
+
+				state =newState; action = newAction;
+			}
+		}
+
+
+	}
+
+	private int getAction(int state, int timeStep) {
+		return ActionUtil.timedEpsilonGreedy(policy[state], timeStep);
 	}
 
 	private void estimatePolicy(Episode episode) {

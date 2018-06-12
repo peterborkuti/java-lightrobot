@@ -84,6 +84,7 @@ public class MLUtil {
 				mapToDouble( i -> (i == aStar) ? good : bad).boxed().toArray(Double[]::new);
 	}
 
+
 	/**
 	 * Gets average from a list of doubles
 	 * @param returns

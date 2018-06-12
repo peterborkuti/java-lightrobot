@@ -47,7 +47,7 @@ public class ActionUtil {
 	 * @param timeStep
 	 * @return
 	 */
-	public static int epsilonTimeStepGreedy(Double[] policyForTheGivenState, int timeStep) {
+	public static int timedEpsilonGreedy(Double[] policyForTheGivenState, int timeStep) {
 		double epsilon = (timeStep == 0) ? 1 : 1.0 / timeStep;
 
 		return epsilonGreedy(policyForTheGivenState, epsilon);
