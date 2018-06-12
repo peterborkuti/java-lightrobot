@@ -66,7 +66,7 @@ public abstract class MonteCarloAgent implements Agent {
 
 				int aStar = MLUtil.argMax(q[state]);
 
-				policy[state] = MLUtil.getEpsilonGreedyPolicy(policy[state], aStar, 0.3);
+				policy[state] = MLUtil.getEpsilonGreedyPolicy(q[state], aStar, 0.3);
 			}
 		}
 	}

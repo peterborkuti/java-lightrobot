@@ -2,9 +2,9 @@ package hu.bp.lightrobot;
 
 import java.util.stream.IntStream;
 
-public class LightRobot extends MonteCarloAgent {
-	LightRobot(Environment world) {
-		super(world);
+public class LightRobotTD extends TemporalDifferenceAgent {
+	LightRobotTD(Environment world) {
+		super(world, 0.1,0.1);
 	}
 
 	@Override

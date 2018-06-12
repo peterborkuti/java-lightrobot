@@ -2,23 +2,9 @@ package hu.bp.lightrobot;
 
 import java.util.List;
 
-public abstract class TemporalDifferenceAgent implements Agent {
-	protected final Environment world;
-
-	protected Double[][] policy;
-	protected Double[][] q;
-	protected List<Double> returns[][];
-
-	protected double stepSize = 0.1;
-	protected double epsilon = 0.1;
-
+public abstract class TemporalDifferenceAgent extends AbstractAgent {
 	TemporalDifferenceAgent(Environment world, double stepSize, double epsilon) {
-		this.world = world;
-		this.stepSize = stepSize;
-		this.epsilon = epsilon;
-		q =  MLUtil.getRandomMatrix(world.getNumberOfStates(), getNumberOfActions());
-		returns = MLUtil.getMatrixOfEmptyArrayLists(world.getNumberOfStates(), getNumberOfActions());
-		policy = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 1 / getNumberOfActions());
+		super(world, stepSize, epsilon);
 	}
 
 	@Override
@@ -38,7 +24,7 @@ public abstract class TemporalDifferenceAgent implements Agent {
 		System.out.println("LastPolicy:" + this.toString());
 	}
 
-	private Double[] prediction(int episodeNum, int stepsInEpisode, Double[][] policy, double learningRate, double discount) {
+	public Double[] prediction(int episodeNum, int stepsInEpisode, Double[][] policy, double learningRate, double discount) {
 		Double[] V = MLUtil.getRandomArray(world.getNumberOfStates());
 
 		int worldState = world.reset();
@@ -48,7 +34,7 @@ public abstract class TemporalDifferenceAgent implements Agent {
 
 		for (int i = 0; i < stepsInEpisode; i++) {
 			int prevState = state;
-			action = getAction(prevState, episodeNum * stepsInEpisode + i);
+			//action = getAction(prevState, episodeNum * stepsInEpisode + i);
 			Step step = world.step(action);
 			state = step.observation;
 			double R = step.reward;
@@ -58,37 +44,32 @@ public abstract class TemporalDifferenceAgent implements Agent {
 		return V;
 	}
 
-	private int getNumberOfStates() {
-		return world.getNumberOfStates() * getNumberOfActions();
-	}
+	public void controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
+		Double[][] Q = MLUtil.getRandomMatrix(world.getNumberOfStates(), getNumberOfActions());
 
-	private void controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
-		Double[][] Q = MLUtil.getRandomMatrix(getNumberOfStates(), getNumberOfActions());
+		int state = world.reset();
 
-		for (int i = 0; i < numOfEpsiodes; i++) {
-			int worldState = world.reset();
+		int action = getAction(state, 0, Q[state]);
 
-			int state = worldState;
-			int action = getAction(state, i * stepsInEpizode);
+		for (int i = 0; i < stepsInEpizode * numOfEpsiodes; i++) {
+			Step step = world.step(action);
 
-			for (int j = 0; j < stepsInEpizode; j++) {
-				Step step = world.step(action);
-				double R = step.reward;
-				int newState = step.observation + world.getNumberOfStates() * action;
-				int aStart = MLUtil.argMax()
-				policy[newState] = MLUtil.getEpsilonGreedyPolicy(policy[newState], )
-				int newAction = getAction(newState, i * stepsInEpizode + j);
+			double R = step.reward;
+			int newState = step.observation;
 
-				Q[state][action] += learningRate * (R + discount * Q[newState][newAction] - Q[state][action]);
+			System.out.println("(" +state+","+action+") -> "+R);
 
-				state =newState; action = newAction;
-			}
+			int newAction = getAction(newState, i, Q[newState]);
+
+			Q[state][action] += learningRate * (R + discount * Q[newState][newAction] - Q[state][action]);
+
+			state = newState; action = newAction;
 		}
-
-
 	}
 
-	private int getAction(int state, int timeStep) {
+	private int getAction(int state, int timeStep, Double[] qForState) {
+		int aStar = MLUtil.argMax(qForState);
+		policy[state] = MLUtil.getEpsilonGreedyPolicy(policy[state], aStar, 0.3);
 		return ActionUtil.timedEpsilonGreedy(policy[state], timeStep);
 	}
 
@@ -105,24 +86,15 @@ public abstract class TemporalDifferenceAgent implements Agent {
 
 				double averageReturns = MLUtil.getAverageReturnForAStateAction(returns[step.prevState][step.action]);
 
-				q[step.prevState][step.action] = averageReturns;
+				//q[step.prevState][step.action] = averageReturns;
 
-				int aStar = MLUtil.argMax(q[step.prevState]);
+				//int aStar = MLUtil.argMax(q[step.prevState]);
 
-				policy[step.prevState] = MLUtil.getEpsilonGreedyPolicy(policy[step.prevState], aStar, 0.3);
+				//policy[step.prevState] = MLUtil.getEpsilonGreedyPolicy(policy[step.prevState], aStar, 0.3);
 			}
 		}
 
 		System.out.println(this);
 	}
-
-	public String toString() {
-		return
-				"Q:" + MLUtil.matrixToString(q) + "\n" +
-						"Returns:" + MLUtil.matrixListToString(returns) + "\n" +
-						"AVGReturns:" + MLUtil.getAverageReturns(returns) + "\n" +
-						"Policy:" + MLUtil.matrixToString(policy);
-	}
-
 
 }

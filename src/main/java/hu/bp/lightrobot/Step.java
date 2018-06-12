@@ -14,4 +14,8 @@ public class Step {
         this.reward = reward;
         this.done = done;
     }
+
+    public String toString() {
+        return "{observation:" + observation + ", reward:" + reward + "}";
+    }
 }
