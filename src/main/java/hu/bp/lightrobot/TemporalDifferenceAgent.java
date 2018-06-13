@@ -44,6 +44,27 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 		return V;
 	}
 
+	/**
+	 * Sarsa (on-policy TD control) for estimating Q ≈ q ∗
+	 *
+	 * Algorithm parameters: step size α ∈ (0, 1], small ε > 0
+	 * Initialize Q(s, a), for all s ∈ S + , a ∈ A(s), arbitrarily except that Q(terminal , ·) = 0
+	 * Loop for each episode:
+	 *   Initialize S
+	 *   Choose A from S using policy derived from Q (e.g., ε-greedy)
+	 *   Loop for each step of episode:
+	 *      Take action A, observe R, S 0
+	 *      Choose A 0 from S 0 using
+	 *       policy derived from Q (e.g.,  ε-greedy)
+	 *      Q(S, A) ← Q(S, A) + α R + γQ(S 0 , A 0 ) − Q(S, A)
+	 *      S ← S 0 ; A ← A 0 ;
+	 *  until S is terminal
+
+	 * @param numOfEpsiodes
+	 * @param stepsInEpizode
+	 * @param learningRate
+	 * @param discount
+	 */
 	public void controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
 		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
 
@@ -69,6 +90,53 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 			state = newState; action = newAction;
 		}
 	}
+
+	/**
+	 * Q-learning (off-policy TD control) for estimating π ≈ π ∗
+	 * Algorithm parameters: step size α ∈ (0, 1], small ε > 0
+	 * Initialize Q(s, a), for all s ∈ S + , a ∈ A(s), arbitrarily except that Q(terminal , ·) = 0
+	 * Loop for each episode:
+	 *   Initialize S
+	 *   Loop for each step of episode:
+	 *     Choose A from S using policy derived from Q (e.g., ε-greedy)
+	 *     Take action A, observe  R, S 0
+
+	 *     Q(S, A) ← Q(S, A) + α R + γ max a Q(S 0 , a) − Q(S, A)
+	 *     0
+	 *     S ← S
+	 *  until S is terminal
+	 *
+	 * @param numOfEpsiodes
+	 * @param stepsInEpizode
+	 * @param learningRate
+	 * @param discount
+	 */
+	public void controlQLearning(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
+		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
+
+		int state = world.reset();
+
+		int action = getAction(state, 0, Q[state]);
+
+		for (int i = 0; i < stepsInEpizode * numOfEpsiodes; i++) {
+			Step step = world.step(action);
+
+			double R = step.reward;
+			int newState = step.observation;
+
+			System.out.println("(" +state+","+action+") -> "+R);
+
+			int newAction = getAction(newState, i, Q[newState]);
+			System.out.println("Policy:" + MLUtil.arrToString(getGreedyPolicy()));
+
+			System.out.print("Q(" + state + "," + action + "):" + Q[state][action] + "->");
+			Q[state][action] += learningRate * (R + discount * Math.max(Q[newState] - Q[state][action]);
+			System.out.println(Q[state][action]);
+
+			state = newState; action = newAction;
+		}
+	}
+
 
 	private int getAction(int state, int timeStep, Double[] qForState) {
 		int aStar = MLUtil.argMax(qForState);

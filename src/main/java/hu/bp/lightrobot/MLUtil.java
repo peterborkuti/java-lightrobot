@@ -84,6 +84,10 @@ public class MLUtil {
 				mapToDouble( i -> (i == aStar) ? good : bad).boxed().toArray(Double[]::new);
 	}
 
+	public static Double getMax(Double[] arr) {
+		return Arrays.stream(arr).max(Double::max).get();
+	}
+
 
 	/**
 	 * Gets average from a list of doubles
