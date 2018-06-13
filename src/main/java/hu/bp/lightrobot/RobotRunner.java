@@ -7,7 +7,7 @@ public class RobotRunner {
 		Environment synchronWorld = new BulbWorld(true);
 		LightRobotTD lightRobot1 = new LightRobotTD(synchronWorld);
 
-		lightRobot1.controlSARSA(1, 1000, 1, 1);
+		lightRobot1.controlSARSA(1, 1000, 0.5, 0.5);
 /*
 		Agent lightRobot2 = new LightRobotMC(asynchronWorld);
 

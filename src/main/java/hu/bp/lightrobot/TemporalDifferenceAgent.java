@@ -45,7 +45,7 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 	}
 
 	public void controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
-		Double[][] Q = MLUtil.getRandomMatrix(world.getNumberOfStates(), getNumberOfActions());
+		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
 
 		int state = world.reset();
 
@@ -60,8 +60,11 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 			System.out.println("(" +state+","+action+") -> "+R);
 
 			int newAction = getAction(newState, i, Q[newState]);
+			System.out.println("Policy:" + MLUtil.arrToString(getGreedyPolicy()));
 
+			System.out.print("Q(" + state + "," + action + "):" + Q[state][action] + "->");
 			Q[state][action] += learningRate * (R + discount * Q[newState][newAction] - Q[state][action]);
+			System.out.println(Q[state][action]);
 
 			state = newState; action = newAction;
 		}

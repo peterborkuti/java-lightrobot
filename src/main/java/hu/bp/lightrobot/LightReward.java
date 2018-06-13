@@ -5,10 +5,10 @@ public class LightReward {
         return (lightOn && action == 1) || (!lightOn && action == 0);
     }
     public static double getRewardWhenLightIsSynchron(int action, boolean lightOn) {
-        return lightIsSynchron(action, lightOn) ? 0 : -1;
+        return lightIsSynchron(action, lightOn) ? 1 : -1;
     }
 
     public static double getRewardWhenLightIsAsynchron(int action, boolean lightOn) {
-        return lightIsSynchron(action, lightOn) ? -1 : 0;
+        return lightIsSynchron(action, lightOn) ? -1 : 1;
     }
 }
