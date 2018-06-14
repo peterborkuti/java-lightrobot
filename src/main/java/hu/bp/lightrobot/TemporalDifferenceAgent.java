@@ -65,7 +65,7 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 	 * @param learningRate
 	 * @param discount
 	 */
-	public void controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
+	public Double[][] controlSARSA(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
 		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
 
 		int state = world.reset();
@@ -89,6 +89,8 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 
 			state = newState; action = newAction;
 		}
+
+		return Q;
 	}
 
 	/**
@@ -111,14 +113,14 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 	 * @param learningRate
 	 * @param discount
 	 */
-	public void controlQLearning(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
+	public Double[][] controlQLearning(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
 		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
 
 		int state = world.reset();
 
-		int action = getAction(state, 0, Q[state]);
-
 		for (int i = 0; i < stepsInEpizode * numOfEpsiodes; i++) {
+			int action = getAction(state, i, Q[state]);
+
 			Step step = world.step(action);
 
 			double R = step.reward;
@@ -126,15 +128,16 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 
 			System.out.println("(" +state+","+action+") -> "+R);
 
-			int newAction = getAction(newState, i, Q[newState]);
-			System.out.println("Policy:" + MLUtil.arrToString(getGreedyPolicy()));
+			System.out.println(i + ".step. Policy:" + MLUtil.arrToString(getGreedyPolicy()));
 
 			System.out.print("Q(" + state + "," + action + "):" + Q[state][action] + "->");
-			Q[state][action] += learningRate * (R + discount * Math.max(Q[newState] - Q[state][action]);
+			Q[state][action] += learningRate * (R + discount * MLUtil.getMax(Q[newState]) - Q[state][action]);
 			System.out.println(Q[state][action]);
 
-			state = newState; action = newAction;
+			state = newState;
 		}
+
+		return Q;
 	}
 
 

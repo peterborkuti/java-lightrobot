@@ -85,7 +85,7 @@ public class MLUtil {
 	}
 
 	public static Double getMax(Double[] arr) {
-		return Arrays.stream(arr).max(Double::max).get();
+		return Arrays.stream(arr).max(Double::compare).orElse(0D);
 	}
 
 
