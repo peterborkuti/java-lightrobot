@@ -57,32 +57,32 @@ class CarTest {
 		CarStateChange move90degree = new CarStateChange(0, 0, Math.PI / 2);
 		CarStateChange moveMinus90Degree = new CarStateChange(0, 0, - Math.PI / 2);
 
-		assertEquals(noMove, car.rollInPlace(0, 0));
-		assertEquals(noMove, car.rollInPlace(0, 4));
-		assertEquals(noMove, car.rollInPlace(4, 0));
+		assertEquals(noMove, car.rollInPlace(0, 0, 0));
+		assertEquals(noMove, car.rollInPlace(0, 0, 1));
+		assertEquals(noMove, car.rollInPlace(4, 4, 0));
 
-		assertEquals(move90degree, car.rollInPlace(1.0 / 4.0, 1));
-		assertEquals(moveMinus90Degree, car.rollInPlace(-1.0 / 4.0, 1));
+		assertEquals(moveMinus90Degree, car.rollInPlace(-1.0 / 4.0, 1.0 / 4.0, 1));
+		assertEquals(move90degree, car.rollInPlace(1.0 / 4.0, -1.0 / 4.0, 1));
 	}
 
 	@Test
 	void moveOnCircle() {
-/*
-		double wheelDiameter = 5;
+
+		double wheelDiameter = 1;
 		double circumference = wheelDiameter * Math.PI;
-		Car car = new Car(0, wheelDiameter);
-*/
-		Car car = new Car();
+		Car car = new Car(1, wheelDiameter);
 
 		CarStateChange noMove = new CarStateChange(0, 0, 0);
-		CarStateChange move90degree = new CarStateChange(0, 0, Math.PI / 2);
+		CarStateChange move90degree = new CarStateChange(-1.0, 1.0, Math.PI / 2, 1, 2);
+		//CarStateChange move90degree = new CarStateChange(-1, 1, Math.PI / 2);
+
 		CarStateChange moveMinus90Degree = new CarStateChange(0, 0, - Math.PI / 2);
 
 		assertEquals(noMove, car.moveOnCircle(0, 0, 0));
 		assertEquals(noMove, car.moveOnCircle(0, 4, 0));
 		assertEquals(noMove, car.moveOnCircle(0, 0, 1));
 
-		assertEquals(move90degree, car.moveOnCircle(1.0, 2.0, 1));
+		assertEquals(move90degree, car.moveOnCircle(1.0, 3.0, 1.0 / 4.0));
 		//assertEquals(moveMinus90Degree, car.rollInPlace(-1.0 / 4.0, 1));
 	}
 }

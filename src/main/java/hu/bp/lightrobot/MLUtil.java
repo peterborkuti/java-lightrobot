@@ -1,5 +1,7 @@
 package hu.bp.lightrobot;
 
+import hu.bp.linefollowerrobot.DoubleComparator;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -136,9 +138,9 @@ public class MLUtil {
 	}
 
 	public static boolean doubleEquals(double a, double b, double ...threshold) {
-		double _threshold = 0.01;
-		if (threshold.length > 0) _threshold = threshold[0];
-		return (Math.abs(a - b) < _threshold);
+		DoubleComparator dc = new DoubleComparator() {};
+
+		return dc.equals(a, b, threshold);
 	}
 
 

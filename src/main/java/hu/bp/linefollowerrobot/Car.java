@@ -25,7 +25,7 @@ public class Car {
 		}
 
 		if (MLUtil.doubleEquals(leftMotorRPM, -rightMotorRPM)) {
-			return rollInPlace(leftMotorRPM, deltaTimeInMinutes);
+			return rollInPlace(leftMotorRPM, rightMotorRPM, deltaTimeInMinutes);
 		}
 
 		return moveOnCircle(leftMotorRPM, rightMotorRPM, deltaTimeInMinutes);
@@ -33,20 +33,33 @@ public class Car {
 
 	public CarStateChange moveOnCircle(double leftMotorRPM, double rightMotorRPM, double deltaTimeInMinutes) {
 		if ((leftMotorRPM == 0 && rightMotorRPM == 0) || deltaTimeInMinutes == 0) {
-			return new CarStateChange(0, 0, 0);
+			return new CarStateChange();
 		}
 
 		double leftWheelArcLength = getArcLength(leftMotorRPM, deltaTimeInMinutes);
 		double rightWheelArcLength = getArcLength(rightMotorRPM, deltaTimeInMinutes);
 
-		double alfa = leftMotorRPM == 0 ? 0: rightMotorRPM / leftMotorRPM;
-		double r = trackWidth * rightWheelArcLength / (leftWheelArcLength - rightWheelArcLength);
-		double R = r + trackWidth / 2.0;
 
-		double dx = R - R * Math.cos(alfa);
-		double dy = R * Math.sin(alfa);
+		double trackCenterArcLength = (leftWheelArcLength + rightWheelArcLength) / 2.0;
 
-		return new CarStateChange(dx, dy, alfa);
+		double innerArcLength = rightWheelArcLength;
+		double outerArcLength = leftWheelArcLength;
+
+		if (innerArcLength > outerArcLength) {
+			innerArcLength = leftWheelArcLength;
+			outerArcLength = rightWheelArcLength;
+		}
+
+		double innerArcRadius = trackWidth * innerArcLength / (outerArcLength - innerArcLength);
+
+		double trackCenterRadius = innerArcRadius + trackWidth / 2.0;
+
+		double alfa = trackCenterArcLength / trackCenterRadius;
+
+		double dx = trackCenterRadius - trackCenterRadius * Math.cos(alfa);
+		double dy = trackCenterRadius * Math.sin(alfa);
+
+		return new CarStateChange(dx, dy, alfa, leftMotorRPM, rightMotorRPM);
 	}
 
 	public static double getArc(double motorRPM, double deltaTimeInMinutes) {
@@ -54,7 +67,7 @@ public class Car {
 	}
 
 	public double getArcLength(double motorRPM, double deltaTimeInMinutes, double wheelDiameter) {
-		return getArc(motorRPM, deltaTimeInMinutes) * wheelDiameter / 2.0;
+		return getArc(Math.abs(motorRPM), deltaTimeInMinutes) * wheelDiameter / 2.0;
 	}
 
 	public double getArcLength(double motorRPM, double deltaTimeInMinutes) {
@@ -62,10 +75,10 @@ public class Car {
 	}
 
 	public CarStateChange moveStraight(double motorRPM, double deltaTimeInMinutes) {
-		return new CarStateChange(0,getArcLength(motorRPM, deltaTimeInMinutes), 0);
+		return new CarStateChange(0,getArcLength(motorRPM, deltaTimeInMinutes), 0, motorRPM, motorRPM);
 	}
 
-	public CarStateChange rollInPlace(double motorRPM, double deltaTimeInMinutes) {
-		return new CarStateChange(0, 0, getArc(motorRPM, deltaTimeInMinutes));
+	public CarStateChange rollInPlace(double leftMotorRPM, double rightMotorRPM, double deltaTimeInMinutes) {
+		return new CarStateChange(0, 0, getArc(leftMotorRPM, deltaTimeInMinutes), leftMotorRPM, rightMotorRPM);
 	}
 }

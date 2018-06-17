@@ -1,9 +1,11 @@
 package hu.bp.linefollowerrobot;
 
+import hu.bp.lightrobot.MLUtil;
+
 import java.util.HashMap;
 import java.util.Objects;
 
-public class CarStateChange {
+public class CarStateChange implements DoubleComparator {
 	public final double x;
 	public final double y;
 	public final double angle;
@@ -18,6 +20,28 @@ public class CarStateChange {
 		this.angle = angle % (Math.PI * 2);
 	}
 
+	public CarStateChange(double x, double y, double angle, double left, double right) {
+		if (equals(x, 0)) x = 0.0;
+		if (equals(y, 0)) y = 0.0;
+		if (equals(angle, 0)) angle = 0.0;
+
+		this.x = getXSign(left, right) * Math.abs(x);
+		this.y = getYSign(left, right)* Math.abs(y);
+		this.angle = getAngleSign(left, right) * Math.abs(angle) % (Math.PI * 2);
+	}
+
+	public static int getAngleSign(double left, double right) {
+		return (left > 0 && right > 0 && left > right) || (left < 0 && right < 0 && right < left ) || (left > 0 && right < 0 && MLUtil.doubleEquals(left, Math.abs(right))) ? 1 : -1;
+	}
+
+	public static int getXSign(double left, double right) {
+		return (left > 0 && right > 0 && left > right) || (left < 0 && right < 0 && left < right)? 1 : -1;
+	}
+
+	public static int getYSign(double left, double right) {
+		return (left > 0 && right > 0) ? 1 : -1;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -26,9 +50,9 @@ public class CarStateChange {
 
 		CarStateChange that = (CarStateChange) o;
 
-		return Double.compare(that.x, x) == 0 &&
-				Double.compare(that.y, y) == 0 &&
-				Double.compare(that.angle, angle) == 0;
+		return equals(that.x, x) &&
+				equals(that.y, y) &&
+				equals(that.angle, angle);
 	}
 
 	@Override
