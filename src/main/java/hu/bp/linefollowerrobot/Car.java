@@ -3,8 +3,8 @@ package hu.bp.linefollowerrobot;
 import hu.bp.lightrobot.MLUtil;
 
 public class Car {
-	private double trackWidth;
-	private double wheelDiameter;
+	public final double trackWidth;
+	public final double wheelDiameter;
 
 	public Car() {
 		this(1, 1);
