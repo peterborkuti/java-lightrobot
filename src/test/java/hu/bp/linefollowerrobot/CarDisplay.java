@@ -2,6 +2,7 @@ package hu.bp.linefollowerrobot;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,7 +16,7 @@ class CarGraphics extends Frame {
 		halfTrackWidth = (int)car.trackWidth;
 		wheelRadius = (int)(car.wheelDiameter / 2.0);
 
-		setSize(300, 300);
+		setSize(600, 600);
 		x = 0;
 		y = 0;
 		angle = 0;
@@ -38,8 +39,10 @@ class CarGraphics extends Frame {
 
 		AffineTransform at = new AffineTransform(saveAT);
 
-		at.rotate(angle);
-		at.translate(100 + x, 100 + y);
+		int centerX = getWidth() / 2 + x;
+		int centerY = getHeight() / 2 + y;
+		at.rotate(angle,  centerX, centerY);
+		at.translate(centerX, centerY);
 
 		g2d.setTransform(at);
 
@@ -64,6 +67,8 @@ class CarGraphics extends Frame {
 class CarMover extends TimerTask {
 	private CarGraphics carGraphics;
 	private final Car car;
+	private Random rnd = new Random();
+
 	public CarMover(Car car, CarGraphics carGraphics) {
 		this.car = car;
 		this.carGraphics = carGraphics;
@@ -75,7 +80,7 @@ class CarMover extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		CarStateChange carStateChange = car.move(2, 0, 0.1);
+		CarStateChange carStateChange = car.move(Math.abs(rnd.nextInt(10)), Math.abs(rnd.nextInt(10)), 0.1);
 		carGraphics.drawCar(carStateChange);
 	}
 }
@@ -87,9 +92,9 @@ public class CarDisplay {
 		CarMover carMover = new CarMover(car, carGraphics);
 
 		Timer timer = new Timer();
-		timer.schedule(carMover, 1000, 1000);
+		timer.schedule(carMover, 1000, 100);
 
-		Thread.sleep(10000);
+		Thread.sleep(30000);
 
 		timer.cancel();
 		timer.purge();
