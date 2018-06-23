@@ -41,7 +41,9 @@ class CarGraphics extends Frame {
 
 		int centerX = getWidth() / 2 + x;
 		int centerY = getHeight() / 2 + y;
+
 		at.rotate(angle,  centerX, centerY);
+
 		at.translate(centerX, centerY);
 
 		g2d.setTransform(at);
