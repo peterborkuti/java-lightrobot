@@ -1,10 +1,9 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.util;
 
-import hu.bp.linefollowerrobot.DoubleComparator;
+import hu.bp.ai.interfaces.DoubleComparator;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 public class MLUtil {

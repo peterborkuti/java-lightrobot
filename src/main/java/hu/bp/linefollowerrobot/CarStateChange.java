@@ -1,8 +1,8 @@
 package hu.bp.linefollowerrobot;
 
-import hu.bp.lightrobot.MLUtil;
+import hu.bp.ai.interfaces.DoubleComparator;
+import hu.bp.ai.util.MLUtil;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class CarStateChange implements DoubleComparator {

@@ -1,4 +1,4 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.interfaces;
 
 public interface Agent {
 	/**

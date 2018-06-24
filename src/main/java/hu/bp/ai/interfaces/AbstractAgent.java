@@ -1,4 +1,6 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.interfaces;
+
+import hu.bp.ai.util.MLUtil;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ public abstract class AbstractAgent implements Agent {
 	protected double stepSize = 0.1;
 	protected double epsilon = 0.1;
 
-	AbstractAgent(Environment world, double stepSize, double epsilon) {
+	public AbstractAgent(Environment world, double stepSize, double epsilon) {
 		this.world = world;
 		this.stepSize = stepSize;
 		this.epsilon = epsilon;

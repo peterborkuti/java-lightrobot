@@ -1,4 +1,6 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.interfaces;
+
+import hu.bp.ai.rl.Step;
 
 public interface Environment {
 	/**

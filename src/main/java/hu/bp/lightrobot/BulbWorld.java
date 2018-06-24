@@ -1,5 +1,8 @@
 package hu.bp.lightrobot;
 
+import hu.bp.ai.interfaces.Environment;
+import hu.bp.ai.rl.Step;
+
 import java.util.Random;
 
 public class BulbWorld implements Environment {

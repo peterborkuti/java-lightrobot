@@ -1,6 +1,7 @@
 package hu.bp.lightrobot;
 
-import java.util.stream.IntStream;
+import hu.bp.ai.interfaces.Environment;
+import hu.bp.ai.util.MLUtil;
 
 public class RobotRunner {
 	public static void main(String[] args) {

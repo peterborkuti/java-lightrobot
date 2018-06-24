@@ -1,5 +1,10 @@
 package hu.bp.lightrobot;
 
+import hu.bp.ai.interfaces.Agent;
+import hu.bp.ai.interfaces.Environment;
+import hu.bp.ai.rl.Episode;
+import hu.bp.ai.rl.EpisodeStep;
+import hu.bp.ai.rl.Step;
 import name.falgout.jeffrey.testing.junit.mockito.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package hu.bp.linefollowerrobot;
+package hu.bp.ai.interfaces;
 
 public interface DoubleComparator {
 	default boolean equals(double a, double b, double ...threshold) {

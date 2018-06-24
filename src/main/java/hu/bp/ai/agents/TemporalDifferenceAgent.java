@@ -1,6 +1,12 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.agents;
 
-import java.util.List;
+import hu.bp.ai.interfaces.AbstractAgent;
+import hu.bp.ai.interfaces.Environment;
+import hu.bp.ai.rl.Episode;
+import hu.bp.ai.rl.EpisodeStep;
+import hu.bp.ai.rl.Step;
+import hu.bp.ai.util.ActionUtil;
+import hu.bp.ai.util.MLUtil;
 
 public abstract class TemporalDifferenceAgent extends AbstractAgent {
 	TemporalDifferenceAgent(Environment world, double stepSize, double epsilon) {

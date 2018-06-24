@@ -1,4 +1,4 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.agents;
 
 /**
  * Monte Carlo ES (Exploring Starts), for estimating π ≈ π ∗
@@ -21,6 +21,12 @@ package hu.bp.lightrobot;
  *        Q(S t ) ← average(Returns(S t , A t ))
  *        π(S t ) ← argmax a Q(S t , a)
  */
+
+import hu.bp.ai.interfaces.Agent;
+import hu.bp.ai.interfaces.Environment;
+import hu.bp.ai.rl.Episode;
+import hu.bp.ai.rl.EpisodeStep;
+import hu.bp.ai.util.MLUtil;
 
 import java.util.List;
 import java.util.stream.IntStream;

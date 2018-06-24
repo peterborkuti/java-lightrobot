@@ -1,8 +1,8 @@
 package hu.bp.linefollowerrobot;
 
-import hu.bp.lightrobot.Environment;
+import hu.bp.ai.interfaces.Environment;
 import hu.bp.lightrobot.LightReward;
-import hu.bp.lightrobot.Step;
+import hu.bp.ai.rl.Step;
 
 import java.util.Random;
 

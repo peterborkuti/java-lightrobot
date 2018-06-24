@@ -1,4 +1,6 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.util;
+
+import hu.bp.ai.util.MLUtil;
 
 import java.util.Random;
 

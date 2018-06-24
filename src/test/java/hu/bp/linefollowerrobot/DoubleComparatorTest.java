@@ -1,8 +1,8 @@
 package hu.bp.linefollowerrobot;
 
+import hu.bp.ai.interfaces.DoubleComparator;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;

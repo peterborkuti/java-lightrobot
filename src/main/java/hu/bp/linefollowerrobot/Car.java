@@ -1,6 +1,6 @@
 package hu.bp.linefollowerrobot;
 
-import hu.bp.lightrobot.MLUtil;
+import hu.bp.ai.util.MLUtil;
 
 public class Car {
 	public final double trackWidth;

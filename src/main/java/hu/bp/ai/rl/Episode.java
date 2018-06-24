@@ -1,4 +1,7 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.rl;
+
+import hu.bp.ai.interfaces.Agent;
+import hu.bp.ai.interfaces.Environment;
 
 import java.util.Arrays;
 import java.util.List;

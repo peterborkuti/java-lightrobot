@@ -1,4 +1,4 @@
-package hu.bp.lightrobot;
+package hu.bp.ai.rl;
 
 public class EpisodeStep {
 	public final int prevState;
