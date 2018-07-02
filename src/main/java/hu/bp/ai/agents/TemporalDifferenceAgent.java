@@ -9,7 +9,7 @@ import hu.bp.ai.util.ActionUtil;
 import hu.bp.ai.util.MLUtil;
 
 public abstract class TemporalDifferenceAgent extends AbstractAgent {
-	TemporalDifferenceAgent(Environment world, double stepSize, double epsilon) {
+	public TemporalDifferenceAgent(Environment world, double stepSize, double epsilon) {
 		super(world, stepSize, epsilon);
 	}
 

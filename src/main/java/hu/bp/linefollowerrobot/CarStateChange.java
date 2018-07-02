@@ -26,18 +26,37 @@ public class CarStateChange implements DoubleComparator {
 		if (equals(angle, 0)) angle = 0.0;
 
 		this.x = getXSign(left, right) * Math.abs(x);
-		this.y = getYSign(left, right)* Math.abs(y);
+		this.y = getYSign(left, right) * Math.abs(y);
 		this.angle = getAngleSign(left, right) * Math.abs(angle) % (Math.PI * 2);
 	}
 
+	/**
+	 * decides wheter the car turns clockwise or counterclockwise
+	 *
+	 * @param left left motor RPM
+	 * @param right right motor RPM
+	 * @return with 1 if the car turns clockwise or -1 if counterclockwise
+	 */
 	public static int getAngleSign(double left, double right) {
 		return (left > 0 && right > 0 && left > right) || (left < 0 && right < 0 && right < left ) || (left > 0 && right < 0 && MLUtil.doubleEquals(left, Math.abs(right))) ? 1 : -1;
 	}
 
+	/**
+	 * Decides if the car moves to the right or to the left
+	 * @param left left motor RPM
+	 * @param right right motor RPM
+	 * @return with 1 if car moves to the right or -1 if it moves to the left
+	 */
 	public static int getXSign(double left, double right) {
 		return (left > 0 && right > 0 && left > right) || (left < 0 && right < 0 && left < right)? 1 : -1;
 	}
 
+	/**
+	 * Decides if the car moves up ro down
+	 * @param left left motor RPM
+	 * @param right right motor RPM
+	 * @return with 1 if car moves up or -1 if it moves to the left
+	 */
 	public static int getYSign(double left, double right) {
 		return (left > 0 && right > 0) ? 1 : -1;
 	}

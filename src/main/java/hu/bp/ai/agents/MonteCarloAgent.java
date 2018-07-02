@@ -38,7 +38,7 @@ public abstract class MonteCarloAgent implements Agent {
 	protected Double[][] q;
 	protected List<Double> returns[][];
 
-	MonteCarloAgent (Environment world) {
+	public MonteCarloAgent (Environment world) {
 		this.world = world;
 		q =  MLUtil.getRandomMatrix(world.getNumberOfStates(), getNumberOfActions());
 		returns = MLUtil.getMatrixOfEmptyArrayLists(world.getNumberOfStates(), getNumberOfActions());

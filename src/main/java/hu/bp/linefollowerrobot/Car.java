@@ -2,6 +2,15 @@ package hu.bp.linefollowerrobot;
 
 import hu.bp.ai.util.MLUtil;
 
+/**
+ * Simulates the movement of a two-wheeled car.
+ *
+ * The car has two wheels with given wheel diameter and the with of its track
+ * (the distance between the two wheels)
+ *
+ * Movements are given by the RPM (rotate-per-minute) of the left and right wheel
+ * and the time to move.
+ */
 public class Car {
 	public final double trackWidth;
 	public final double wheelDiameter;
