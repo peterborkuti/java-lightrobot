@@ -19,7 +19,7 @@ public class Car {
 		this(1, 1);
 	}
 
-	public Car(double trackWidth, double wheelDiameter) {
+	public Ca r(double trackWidth, double wheelDiameter) {
 		this.trackWidth = trackWidth;
 		this.wheelDiameter = wheelDiameter;
 	}
@@ -45,30 +45,17 @@ public class Car {
 			return new CarStateChange();
 		}
 
-		double leftWheelArcLength = getArcLength(leftMotorRPM, deltaTimeInMinutes);
-		double rightWheelArcLength = getArcLength(rightMotorRPM, deltaTimeInMinutes);
+		double vr = rightMotorRPM * Math.PI * wheelDiameter;
+		double vl = leftMotorRPM * Math.PI * wheelDiameter;
 
+		double omega = (vr - vl) / trackWidth;
+		double R = (trackWidth / 2.0) * (vl + vr) / (vr - vl);
 
-		double trackCenterArcLength = (leftWheelArcLength + rightWheelArcLength) / 2.0;
+		double dalfa = omega * deltaTimeInMinutes;
+		double dx = R * Math.sin(dalfa);
+		double dy = R * (1 - Math.cos(dalfa));
 
-		double innerArcLength = rightWheelArcLength;
-		double outerArcLength = leftWheelArcLength;
-
-		if (innerArcLength > outerArcLength) {
-			innerArcLength = leftWheelArcLength;
-			outerArcLength = rightWheelArcLength;
-		}
-
-		double innerArcRadius = trackWidth * innerArcLength / (outerArcLength - innerArcLength);
-
-		double trackCenterRadius = innerArcRadius + trackWidth / 2.0;
-
-		double alfa = trackCenterArcLength / trackCenterRadius;
-
-		double dx = trackCenterRadius - trackCenterRadius * Math.cos(alfa);
-		double dy = trackCenterRadius * Math.sin(alfa);
-
-		return new CarStateChange(dx, dy, alfa, leftMotorRPM, rightMotorRPM);
+		return new CarStateChange(dx, dy, dalfa, leftMotorRPM, rightMotorRPM);
 	}
 
 	public static double getArc(double motorRPM, double deltaTimeInMinutes) {
