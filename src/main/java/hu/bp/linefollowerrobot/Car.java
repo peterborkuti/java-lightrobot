@@ -19,7 +19,7 @@ public class Car {
 		this(1, 1);
 	}
 
-	public Ca r(double trackWidth, double wheelDiameter) {
+	public Car(double trackWidth, double wheelDiameter) {
 		this.trackWidth = trackWidth;
 		this.wheelDiameter = wheelDiameter;
 	}
