@@ -86,6 +86,7 @@ public class CarStateChange implements DoubleComparator {
 				"x=" + x +
 				", y=" + y +
 				", angle=" + angle +
+				"(" + (180.0 / Math.PI) * angle + ")" +
 				'}';
 	}
 }
