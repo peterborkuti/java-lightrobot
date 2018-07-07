@@ -4,13 +4,71 @@ import hu.bp.ai.interfaces.AbstractAgent;
 import hu.bp.ai.interfaces.Environment;
 import hu.bp.ai.rl.Episode;
 import hu.bp.ai.rl.EpisodeStep;
+import hu.bp.ai.rl.QLearningStepState;
 import hu.bp.ai.rl.Step;
 import hu.bp.ai.util.ActionUtil;
 import hu.bp.ai.util.MLUtil;
 
 public abstract class TemporalDifferenceAgent extends AbstractAgent {
-	public TemporalDifferenceAgent(Environment world, double stepSize, double epsilon) {
+	public
+	TemporalDifferenceAgent(Environment world, double stepSize, double epsilon) {
 		super(world, stepSize, epsilon);
+	}
+
+	protected QLearningStepState stepState;
+	/**
+	 * Q-learning (off-policy TD control) for estimating π ≈ π ∗
+	 * Algorithm parameters: step size α ∈ (0, 1], small ε > 0
+	 * Initialize Q(s, a), for all s ∈ S + , a ∈ A(s), arbitrarily except that Q(terminal , ·) = 0
+	 * Loop for each episode:
+	 *   Initialize S
+	 *   Loop for each step of episode:
+	 *     Choose A from S using policy derived from Q (e.g., ε-greedy)
+	 *     Take action A, observe  R, S 0
+
+	 *     Q(S, A) ← Q(S, A) + α R + γ max a Q(S 0 , a) − Q(S, A)
+	 *     0
+	 *     S ← S
+	 *  until S is terminal
+	 *
+	 * @param numOfEpisodes
+	 * @param stepsInEpizode
+	 * @param learningRate
+	 * @param discount
+	 */
+	public void controlQLearning(int numOfEpisodes, int stepsInEpizode, double learningRate, double discount) {
+		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
+
+		int state = world.reset();
+
+		stepState = new QLearningStepState(Q, numOfEpisodes, stepsInEpizode, learningRate, discount, state);
+	}
+
+	/**
+	 * After calling controlQLearning, call oneStep while it returns with true
+	 *
+	 * @return
+	 */
+	public boolean oneStep() {
+		int action = getAction(stepState.state, stepState.i, stepState.Q[stepState.state]);
+
+		Step step = world.step(action);
+
+		double R = step.reward;
+		int newState = step.observation;
+
+		System.out.println("(" +stepState.state+","+action+") -> "+R);
+
+		System.out.println(stepState.i + ".step. Policy:" + MLUtil.arrToString(getGreedyPolicy()));
+
+		System.out.print("Q(" + stepState.state + "," + action + "):" + stepState.Q[stepState.state][action] + "->");
+		stepState.Q[stepState.state][action] += stepState.learningRate * (R + stepState.discount * MLUtil.getMax(stepState.Q[newState]) - stepState.Q[stepState.state][action]);
+		System.out.println(stepState.Q[stepState.state][action]);
+
+		stepState.state = newState;
+		stepState.i++;
+
+		return stepState.isContinue();
 	}
 
 	@Override
@@ -98,54 +156,6 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 
 		return Q;
 	}
-
-	/**
-	 * Q-learning (off-policy TD control) for estimating π ≈ π ∗
-	 * Algorithm parameters: step size α ∈ (0, 1], small ε > 0
-	 * Initialize Q(s, a), for all s ∈ S + , a ∈ A(s), arbitrarily except that Q(terminal , ·) = 0
-	 * Loop for each episode:
-	 *   Initialize S
-	 *   Loop for each step of episode:
-	 *     Choose A from S using policy derived from Q (e.g., ε-greedy)
-	 *     Take action A, observe  R, S 0
-
-	 *     Q(S, A) ← Q(S, A) + α R + γ max a Q(S 0 , a) − Q(S, A)
-	 *     0
-	 *     S ← S
-	 *  until S is terminal
-	 *
-	 * @param numOfEpsiodes
-	 * @param stepsInEpizode
-	 * @param learningRate
-	 * @param discount
-	 */
-	public Double[][] controlQLearning(int numOfEpsiodes, int stepsInEpizode, double learningRate, double discount) {
-		Double[][] Q = MLUtil.getMatrix(world.getNumberOfStates(), getNumberOfActions(), 0);
-
-		int state = world.reset();
-
-		for (int i = 0; i < stepsInEpizode * numOfEpsiodes; i++) {
-			int action = getAction(state, i, Q[state]);
-
-			Step step = world.step(action);
-
-			double R = step.reward;
-			int newState = step.observation;
-
-			System.out.println("(" +state+","+action+") -> "+R);
-
-			System.out.println(i + ".step. Policy:" + MLUtil.arrToString(getGreedyPolicy()));
-
-			System.out.print("Q(" + state + "," + action + "):" + Q[state][action] + "->");
-			Q[state][action] += learningRate * (R + discount * MLUtil.getMax(Q[newState]) - Q[state][action]);
-			System.out.println(Q[state][action]);
-
-			state = newState;
-		}
-
-		return Q;
-	}
-
 
 	private int getAction(int state, int timeStep, Double[] qForState) {
 		int aStar = MLUtil.argMax(qForState);

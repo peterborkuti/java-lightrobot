@@ -8,8 +8,12 @@ public class RobotRunner {
 		Environment synchronWorld = new BulbWorld(true);
 		LightRobotTD lightRobot1 = new LightRobotTD(synchronWorld);
 
-		System.out.println("\nQ:" + MLUtil.matrixToString(
-				lightRobot1.controlQLearning(1, 1000, 0.5, 0.5)));
+		lightRobot1.controlQLearning(1, 1000, 0.5, 0.5);
+
+		for (;lightRobot1.oneStep(););
+
+//		System.out.println("\nQ:" + MLUtil.matrixToString(
+//				lightRobot1.s);
 /*
 		Agent lightRobot2 = new LightRobotMC(asynchronWorld);
 

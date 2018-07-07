@@ -17,11 +17,6 @@ public class LightRobotTD extends TemporalDifferenceAgent {
 		return 2;
 	}
 
-	public int getAction(int state, int timeStep) {
-		return ActionUtil.timedEpsilonGreedy(policy[state], timeStep);
-	}
-
-
 	@Override
 	public Integer[] getGreedyPolicy() {
 		return
