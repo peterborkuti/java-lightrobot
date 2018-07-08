@@ -57,13 +57,7 @@ public abstract class TemporalDifferenceAgent extends AbstractAgent {
 		double R = step.reward;
 		int newState = step.observation;
 
-		System.out.println("(" +stepState.state+","+action+") -> "+R);
-
-		System.out.println(stepState.i + ".step. Policy:" + MLUtil.arrToString(getGreedyPolicy()));
-
-		System.out.print("Q(" + stepState.state + "," + action + "):" + stepState.Q[stepState.state][action] + "->");
 		stepState.Q[stepState.state][action] += stepState.learningRate * (R + stepState.discount * MLUtil.getMax(stepState.Q[newState]) - stepState.Q[stepState.state][action]);
-		System.out.println(stepState.Q[stepState.state][action]);
 
 		stepState.state = newState;
 		stepState.i++;
